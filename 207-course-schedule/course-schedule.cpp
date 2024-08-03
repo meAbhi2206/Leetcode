@@ -1,43 +1,39 @@
+//Using Topological Sort
 class Solution {
-    private:
-    bool checkDFS(int node, vector<int> &visited, vector<int> &pathVisited, vector<int> adj[] ){
-        visited[node]=1;
-        pathVisited[node]=1;
-
-        //traverse
-        for(auto it:adj[node]){
-            if(!visited[it]){
-                if(checkDFS(it,visited,pathVisited,adj)) return true;
-            }
-            else if(pathVisited[it]){
-                return true;
-            }
-        }
-
-        pathVisited[node]=0;
-        return false;
-    }
 public:
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         vector<int> adj[numCourses];
-        
-        //converting matrix to list
-        for(int i = 0; i < prerequisites.size(); i++) {
-            int v = prerequisites[i][0], u = prerequisites[i][1];
-            adj[u].push_back(v);
+        for (auto i : prerequisites) {
+            adj[i[1]].push_back(i[0]);
         }
-
-        vector<int> visited(numCourses, 0);
-        vector<int> pathVisited(numCourses, 0);
-
-        for(int i = 0; i < numCourses; i++) {
-            if(!visited[i]) {
-                if(checkDFS(i, visited, pathVisited, adj)) {
-                    return false; //cycle , canot complte
-                }
+        vector<int> indegree(numCourses, 0);
+        for (int i = 0; i < numCourses; i++) {
+            for (auto it : adj[i]) {
+                indegree[it]++;
             }
         }
-        
-        return true; //no cycle can complete
+
+        queue<int> q;
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+        vector<int> topo;
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            topo.push_back(node);
+            // node is in your topo sort
+            // so please remove it from the indegree
+
+            for (auto it : adj[node]) {
+                indegree[it]--;
+                if (indegree[it] == 0)
+                    q.push(it);
+            }
+        }
+        if(topo.size()==numCourses) return true;
+        return false;
     }
 };
