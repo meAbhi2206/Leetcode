@@ -52,21 +52,27 @@ class Solution {
 public:
     int makeConnected(int n, vector<vector<int>>& connections) {
         DisjointSet ds(n);
+        //Count the extra edges
         int Extra=0;
         for(auto it: connections){
             int u=it[0];
             int v=it[1];
+            //if the ultimate parents of both nodes are same 
+            //hence it is already connected 
+            //count it as extras
             if(ds.findUPar(u)== ds.findUPar(v))
                 Extra++;    
             else 
             ds.unionBySize(u,v);
         }
 
+        //find total ultimate parents
         int connected=0;
         for(int i=0;i<n;i++){
             if(ds.parent[i]==i) connected++; 
         }
 
+        //for n connections we need n-1 edges
         int ans=connected-1;
         if(Extra>=ans) return ans;
         return -1;
