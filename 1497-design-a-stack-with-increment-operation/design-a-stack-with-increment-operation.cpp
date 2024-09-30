@@ -1,16 +1,15 @@
 class CustomStack {
 public:
 vector<int>st;
-int top;
+int top,size;
     CustomStack(int maxSize) {
         st.resize(maxSize);
+        size=maxSize;
         top=-1;
     }
     
     void push(int x) {
-        int n=st.size();
-        cout<<top<<n<<" ";
-        if(top<n-1){
+        if(top<size-1){
             top++;
             st[top]=x;
         }
